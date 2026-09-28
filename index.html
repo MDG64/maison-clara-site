@@ -116,13 +116,6 @@
     transition: background-color .2s ease, color .2s ease;
   }
   .pill:hover { background: var(--ink); color: var(--linen); }
-  .filled {
-    display: inline-flex; align-items: center; justify-content: center;
-    background: var(--ink); color: var(--linen); border: 1px solid var(--ink);
-    padding: 14px 28px; line-height: 1;
-    transition: background-color .2s ease, color .2s ease;
-  }
-  .filled:hover { background: var(--linen); color: var(--ink); }
 
   /* ---------- Hero ---------- */
   .hero { position: relative; height: min(88vh, 920px); min-height: 560px; overflow: hidden; background: var(--ink); }
@@ -253,16 +246,15 @@
   .contact { padding-top: var(--section); padding-bottom: var(--section); }
   .contact .label { color: var(--slate); margin-bottom: 28px; }
   .contact h2 { font-size: clamp(34px, 4.6vw, var(--text-heading-lg)); line-height: 1.12; max-width: 22ch; margin-bottom: 48px; }
-  .contact-lines { display: grid; gap: 8px; margin-bottom: 44px; }
+  .contact-lines { display: grid; gap: 8px; }
   .contact-lines a {
     font-size: clamp(26px, 4.2vw, 56px); line-height: 1.15; letter-spacing: -0.01em;
     overflow-wrap: anywhere;
   }
   .contact-lines a:hover { font-style: italic; }
-  .contact-actions { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
 
   /* ---------- Footer ---------- */
-  .footer { padding: 36px 0 44px; display: grid; grid-template-columns: auto 1fr auto; gap: var(--gap); align-items: center; }
+  .footer { padding-top: 36px; padding-bottom: 44px; display: grid; grid-template-columns: auto 1fr auto; gap: var(--gap); align-items: center; }
   .footer img { width: 44px; }
   .footer .tagline { text-align: center; }
   .footer small { display: block; font-size: 14px; color: var(--slate); line-height: 1.5; text-align: right; }
@@ -300,7 +292,7 @@
   }
   @media (prefers-reduced-motion: reduce) {
     .hero-title .line { animation-name: hero-title-fade; animation-duration: 1.6s; }
-    .pill, .filled, .nav-links a::after { transition: none; }
+    .pill, .nav-links a::after { transition: none; }
   }
 </style>
 </head>
@@ -522,10 +514,6 @@
     <div class="contact-lines">
       <a href="mailto:clara@maison-clara.com">clara@maison-clara.com</a>
       <a href="tel:+33675234564"><span class="fr">06 75 23 45 64</span><span class="en">+33 6 75 23 45 64</span></a>
-    </div>
-    <div class="contact-actions">
-      <a class="filled label" href="mailto:clara@maison-clara.com?subject=Demande%20de%20devis%20%E2%80%94%20Maison%20Clara"><span class="fr">Écrire à Clara</span><span class="en">Write to Clara</span></a>
-      <a class="pill label" href="tel:+33675234564"><span class="fr">Appeler</span><span class="en">Call</span></a>
     </div>
   </section>
 </main>

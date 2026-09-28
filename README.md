@@ -4,10 +4,10 @@ Site statique d'une page (`index.html` + `img/`), sans build ni dépendance :
 tout est dans le HTML, la police Cormorant Garamond vient de Google Fonts.
 
 - Français par défaut, anglais par le bouton en haut à droite (mémorisé dans le navigateur).
-- Les quatre vignettes du bandeau changent la photo d'ouverture.
+- Le bandeau d'ouverture montre une seule photo, le salon (`img/hero-interieur.jpg`).
 - Textes repris du flyer et de la présentation « L'art de l'intendance ».
 - Photos : Unsplash (licence Unsplash, crédits en pied de page), portrait et
-  monogramme fournis par Maison Clara, intérieur issu du flyer.
+  monogramme fournis par Maison Clara, salon issu du flyer.
 
 ## Modifier
 

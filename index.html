@@ -238,6 +238,12 @@
   .steps h3 { font-size: var(--text-heading-sm); font-weight: 300; line-height: 1.15; margin: 14px 0 12px; }
   .steps p { font-size: var(--text-body-sm); color: var(--charcoal); max-width: 32ch; }
 
+  /* ---------- Triptych ---------- */
+  .triptych { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gap); max-width: calc(1080px + 2 * var(--pad)); }
+  .triptych figure { margin: 0; }
+  .triptych img { width: 100%; height: auto; aspect-ratio: 3 / 5; object-fit: cover; border: 1px solid var(--ink); }
+  .triptych figcaption { padding-top: 12px; color: var(--slate); }
+
   /* ---------- Quote ---------- */
   .quote { padding-top: var(--section); padding-bottom: var(--section); text-align: center; }
   .quote blockquote { margin: 0 auto; max-width: 22ch; font-size: clamp(30px, 3.6vw, var(--text-heading)); line-height: 1.2; font-style: italic; font-weight: 300; }
@@ -280,6 +286,8 @@
     .hero-title .label { font-size: 13px; }
     .hero-media::after { background: linear-gradient(to top, rgba(28, 20, 12, .72) 0%, rgba(28, 20, 12, .45) 45%, rgba(28, 20, 12, 0) 80%); }
     .bleed-pano img { height: 320px; aspect-ratio: auto; object-position: 50% 50%; }
+    .triptych { gap: 8px; }
+    .triptych figcaption { font-size: 10px; letter-spacing: .1em; }
     .footer { grid-template-columns: 1fr; text-align: center; }
     .footer small { text-align: center; }
     .footer .tagline { order: -1; }
@@ -490,10 +498,20 @@
     <img src="img/monogramme.png" alt="" loading="lazy">
   </section>
 
-  <figure class="bleed" style="margin:0">
-    <img src="img/plage-hossegor.jpg" alt="Passerelle en bois vers la plage, côte landaise" loading="lazy">
-    <figcaption><span class="fr">Côte landaise</span><span class="en">Landes coast</span></figcaption>
-  </figure>
+  <section class="wrap triptych" aria-label="Pays basque">
+    <figure>
+      <img src="img/piments-espelette.jpg" alt="Guirlandes de piments d'Espelette en train de sécher" width="319" height="532" loading="lazy">
+      <figcaption class="label"><span class="fr">Piments d'Espelette</span><span class="en">Espelette peppers</span></figcaption>
+    </figure>
+    <figure>
+      <img src="img/musee-de-la-mer-biarritz.jpg" alt="Façade Art déco du Musée de la Mer à Biarritz" width="380" height="633" loading="lazy">
+      <figcaption class="label">Musée de la Mer, Biarritz</figcaption>
+    </figure>
+    <figure>
+      <img src="img/facade-biarritz.jpg" alt="Immeuble Belle Époque à coupole de Biarritz au coucher du soleil" width="222" height="370" loading="lazy">
+      <figcaption class="label">Biarritz</figcaption>
+    </figure>
+  </section>
 
   <section class="wrap contact" id="contact">
     <p class="label">Contact</p>
@@ -520,8 +538,7 @@
     © 2026 Maison Clara — <span class="fr">Intendance de résidences secondaires, Pays basque &amp; Landes</span><span class="en">Second-home management, Basque Country &amp; Landes</span><br>
     <span class="fr">Photographies : </span><span class="en">Photographs: </span><a href="https://unsplash.com/@mercadomuses" rel="noopener" target="_blank">Mercado Muses</a>,
     <a href="https://unsplash.com/@jvich" rel="noopener" target="_blank">J. Vich</a>,
-    <a href="https://unsplash.com/@lgence" rel="noopener" target="_blank">Lgence</a>,
-    <a href="https://unsplash.com/@mathis_prx" rel="noopener" target="_blank">Mathis Prx</a>
+    <a href="https://unsplash.com/@lgence" rel="noopener" target="_blank">Lgence</a>
     <span class="fr">sur</span><span class="en">on</span> <a href="https://unsplash.com/license" rel="noopener" target="_blank">Unsplash</a>
   </small>
 </footer>

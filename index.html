@@ -160,6 +160,12 @@
   .opener { padding-top: var(--section); padding-bottom: var(--section); }
   .opener .label { color: var(--slate); margin-bottom: 28px; }
   .opener h2 .w { display: inline-block; }
+  .opener { --travel: 150px; }
+  .opener.is-armed .rise { opacity: 0; transform: translateY(var(--travel)); }
+  .opener.is-armed.is-in .rise {
+    opacity: 1; transform: none;
+    transition: opacity 1.5s ease-out, transform 2.2s cubic-bezier(.2, .7, .25, 1);
+  }
   .opener h2 {
     font-size: clamp(34px, 4.6vw, var(--text-heading-lg));
     line-height: 1.12;
@@ -279,6 +285,7 @@
     .hero-title .label { font-size: 13px; }
     .hero-media::after { background: linear-gradient(to top, rgba(28, 20, 12, .72) 0%, rgba(28, 20, 12, .45) 45%, rgba(28, 20, 12, 0) 80%); }
     .bleed-pano img { height: 320px; aspect-ratio: auto; object-position: 50% 50%; }
+    .opener { --travel: 80px; }
     .triptych { gap: 8px; }
     .triptych figcaption { font-size: 10px; letter-spacing: .1em; }
     .footer { grid-template-columns: 1fr; text-align: center; }
@@ -544,10 +551,12 @@
     try { localStorage.setItem('mc-lang', en ? 'fr' : 'en'); } catch (e) {}
   });
 
-  // "Votre sérénité aujourd'hui…": the lines rise into place as the section scrolls in.
+  // "Votre sérénité aujourd'hui…": when the heading comes into view, the label then
+  // each line rise from below and fade in, one after the other (timed, not tied
+  // to the scroll speed). It replays if the reader goes back above the section.
   var opener = document.querySelector('.opener');
   var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (opener && !still) {
+  if (opener && !still && 'IntersectionObserver' in window) {
     var heading = opener.querySelector('h2');
     var label = opener.querySelector('.label');
     [].forEach.call(heading.querySelectorAll('.fr, .en'), function (el) {
@@ -556,48 +565,38 @@
       words.forEach(function (word, i) {
         if (i) el.appendChild(document.createTextNode(' '));
         var w = document.createElement('span');
-        w.className = 'w';
+        w.className = 'w rise';
         w.textContent = word;
         el.appendChild(w);
       });
     });
+    label.classList.add('rise');
 
-    // Each line tracks its own resting position: it starts 100 px low (60 on phones) and
-    // invisible when that position reaches the bottom of the screen, and has
-    // settled by the time it reaches mid-screen; lower lines trail slightly.
-    var lines = [];
-    var group = function () {
-      var base = opener.getBoundingClientRect().top, top = null;
-      [label].concat([].slice.call(heading.querySelectorAll('.w'))).forEach(function (el) {
-        el.style.transform = ''; el.style.opacity = '';
-      });
-      lines = [{ els: [label], off: label.getBoundingClientRect().top - base }];
+    // One beat per visual line: label first, then each line 0.35 s later.
+    var pace = function () {
+      label.style.transitionDelay = '0.1s';
+      var line = 0, top = null;
       [].forEach.call(heading.querySelectorAll('.w'), function (w) {
         if (!w.offsetParent) return; // word of the hidden language
-        if (w.offsetTop !== top) { lines.push({ els: [], off: w.getBoundingClientRect().top - base }); top = w.offsetTop; }
-        lines[lines.length - 1].els.push(w);
+        if (w.offsetTop !== top) { line++; top = w.offsetTop; }
+        w.style.transitionDelay = (0.1 + line * 0.35).toFixed(2) + 's';
       });
     };
-    var place = function () {
-      var vh = window.innerHeight, base = opener.getBoundingClientRect().top;
-      var travel = window.innerWidth < 860 ? 60 : 100;
-      lines.forEach(function (line, i) {
-        var q = (vh - (base + line.off)) / (vh * 0.5) - i * 0.06;
-        q = Math.min(1, Math.max(0, q));
-        q = 1 - (1 - q) * (1 - q);
-        line.els.forEach(function (el) {
-          el.style.transform = q < 1 ? 'translateY(' + ((1 - q) * travel).toFixed(1) + 'px)' : '';
-          el.style.opacity = q < 1 ? q.toFixed(3) : '';
-        });
-      });
-    };
-    var refresh = function () { group(); place(); };
+    pace();
+    window.addEventListener('resize', pace);
+    document.getElementById('lang').addEventListener('click', pace);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(pace);
 
-    refresh();
-    window.addEventListener('scroll', place, { passive: true });
-    window.addEventListener('resize', refresh);
-    document.getElementById('lang').addEventListener('click', refresh);
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(refresh);
+    opener.classList.add('is-armed');
+    // Play once the heading is 20 % into the screen...
+    new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting) opener.classList.add('is-in');
+    }, { rootMargin: '0px 0px -20% 0px' }).observe(heading);
+    // ...and re-arm only when it has gone back below the bottom of the screen.
+    new IntersectionObserver(function (entries) {
+      var e = entries[0];
+      if (!e.isIntersecting && e.boundingClientRect.top > 0) opener.classList.remove('is-in');
+    }).observe(opener);
   }
 })();
 </script>

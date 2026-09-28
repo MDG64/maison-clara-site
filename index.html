@@ -172,6 +172,7 @@
   /* ---------- Full-bleed photo ---------- */
   .bleed { position: relative; }
   .bleed img { width: 100%; height: clamp(360px, 62vh, 760px); object-fit: cover; }
+  .bleed-pano img { height: auto; aspect-ratio: 1840 / 560; }
   .bleed figcaption {
     position: absolute; left: var(--pad); bottom: 18px; color: var(--linen);
     font-size: var(--text-label); letter-spacing: var(--tracking-label); text-transform: uppercase; font-weight: 600;
@@ -256,6 +257,7 @@
     .hero-title { bottom: 28px; }
     .hero-title .label { font-size: 13px; }
     .hero-media::after { background: linear-gradient(to top, rgba(28, 20, 12, .72) 0%, rgba(28, 20, 12, .45) 45%, rgba(28, 20, 12, 0) 80%); }
+    .bleed-pano img { height: 320px; aspect-ratio: auto; object-position: 50% 50%; }
     .footer { grid-template-columns: 1fr; text-align: center; }
     .footer small { text-align: center; }
     .footer .tagline { order: -1; }
@@ -350,9 +352,9 @@
     </div>
   </section>
 
-  <figure class="bleed" style="margin:0">
-    <img src="img/port-saint-jean-de-luz.jpg" alt="Le port de Saint-Jean-de-Luz et ses maisons à colombages" loading="lazy">
-    <figcaption>Saint-Jean-de-Luz</figcaption>
+  <figure class="bleed bleed-pano" style="margin:0">
+    <img src="img/panorama-biarritz.jpg" alt="Biarritz au crépuscule : le phare, les falaises et la Grande Plage" width="1840" height="560" loading="lazy">
+    <figcaption>Biarritz</figcaption>
   </figure>
 
   <section class="wrap services" id="prestations">

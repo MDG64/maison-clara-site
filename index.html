@@ -160,15 +160,9 @@
   .opener { padding-top: var(--section); padding-bottom: var(--section); }
   .opener .label { color: var(--slate); margin-bottom: 28px; }
   .opener h2 .w { display: inline-block; }
-  /* Scroll-driven entrance: the section pins for one screen of scrolling while
-     the label and each line rise into place (driven by the script at the end). */
-  .opener-track.is-pinned { height: 200vh; height: 200svh; }
-  .opener-track.is-pinned .opener {
-    position: sticky; top: 0;
-    height: 100vh; height: 100svh;
-    display: flex; flex-direction: column; justify-content: center;
-    padding-top: 0; padding-bottom: 0;
-  }
+  /* Scroll-driven entrance (script at the end): the lines rise out of the
+     section's lower edge as the page scrolls, without ever stopping the scroll. */
+  .opener.is-rising { overflow: hidden; }
   .opener h2 {
     font-size: clamp(38px, 6vw, 84px);
     line-height: 1.12;
@@ -345,15 +339,13 @@
     </div>
   </section>
 
-  <div class="opener-track" id="approche">
-  <section class="wrap opener">
+  <section class="wrap opener" id="approche">
     <p class="label"><span class="fr">Pays basque &amp; Landes</span><span class="en">Basque Country &amp; Landes</span></p>
     <h2>
       <span class="fr">Votre sérénité aujourd'hui, votre bien préservé demain</span>
       <span class="en">Your peace of mind today, your home protected tomorrow</span>
     </h2>
   </section>
-  </div>
   <hr class="rule">
 
   <section class="wrap split">
@@ -555,13 +547,14 @@
     try { localStorage.setItem('mc-lang', en ? 'fr' : 'en'); } catch (e) {}
   });
 
-  // "Votre sérénité aujourd'hui…": scroll-driven. The section pins for one screen
-  // of scrolling; the label then each line rise from below and fade in, one after
-  // the other, following the scroll, and are all in place before the pin releases.
-  var track = document.querySelector('.opener-track');
+  // "Votre sérénité aujourd'hui…": scroll-driven, the page never stops. Each line
+  // tracks its own resting place: it waits 200 px lower (120 on phones) and
+  // invisible while that place is below the screen, then rises and fades in as
+  // the place travels from the bottom edge up to 40 % of the screen; lower
+  // lines trail a little.
+  var opener = document.querySelector('.opener');
   var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (track && !still) {
-    var opener = track.querySelector('.opener');
+  if (opener && !still) {
     var heading = opener.querySelector('h2');
     var label = opener.querySelector('.label');
     [].forEach.call(heading.querySelectorAll('.fr, .en'), function (el) {
@@ -578,26 +571,25 @@
 
     var lines = [];
     var group = function () {
-      lines = [[label]];
-      var top = null;
+      var base = opener.getBoundingClientRect().top, top = null;
+      [label].concat([].slice.call(heading.querySelectorAll('.w'))).forEach(function (el) {
+        el.style.transform = ''; el.style.opacity = '';
+      });
+      lines = [{ els: [label], off: label.getBoundingClientRect().top - base }];
       [].forEach.call(heading.querySelectorAll('.w'), function (w) {
         if (!w.offsetParent) return; // word of the hidden language
-        if (w.offsetTop !== top) { lines.push([]); top = w.offsetTop; }
-        lines[lines.length - 1].push(w);
+        if (w.offsetTop !== top) { lines.push({ els: [], off: w.getBoundingClientRect().top - base }); top = w.offsetTop; }
+        lines[lines.length - 1].els.push(w);
       });
     };
     var place = function () {
-      var vh = window.innerHeight;
-      var top = track.getBoundingClientRect().top;
-      var pin = track.offsetHeight - vh;                    // scroll length of the pin
-      // 0 when the section is half on screen, 1 when 3/4 of the pin is scrolled
-      var p = (0.5 * vh - top) / (0.5 * vh + 0.75 * pin);
-      var n = lines.length, w = 0.4, gap = n > 1 ? (1 - w) / (n - 1) : 0;
-      var travel = window.innerWidth < 860 ? 100 : 160;
-      lines.forEach(function (els, i) {
-        var q = Math.min(1, Math.max(0, (p - i * gap) / w));
-        q = 1 - Math.pow(1 - q, 3);
-        els.forEach(function (el) {
+      var vh = window.innerHeight, base = opener.getBoundingClientRect().top;
+      var travel = window.innerWidth < 860 ? 120 : 200;
+      lines.forEach(function (line, i) {
+        var q = (vh - (base + line.off)) / (vh * 0.6) - i * 0.08;
+        q = Math.min(1, Math.max(0, q));
+        q = 1 - (1 - q) * (1 - q);
+        line.els.forEach(function (el) {
           el.style.transform = q < 1 ? 'translateY(' + ((1 - q) * travel).toFixed(1) + 'px)' : '';
           el.style.opacity = q < 1 ? q.toFixed(3) : '';
         });
@@ -605,7 +597,7 @@
     };
     var refresh = function () { group(); place(); };
 
-    track.classList.add('is-pinned');
+    opener.classList.add('is-rising');
     refresh();
     window.addEventListener('scroll', place, { passive: true });
     window.addEventListener('resize', refresh);
